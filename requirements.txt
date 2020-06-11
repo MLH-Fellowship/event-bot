@@ -1,0 +1,4 @@
+discord
+python-dotenv
+requests
+dateutils
