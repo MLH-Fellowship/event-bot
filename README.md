@@ -9,7 +9,7 @@ Inspired by the [Hack Quarantine](https://hackquarantine.com) [Calendar Bot](htt
 ```
 virtualenv .venv
 source .venv/bin/activate
-
+cat .example.env > .env
 ```
 
 ## Run
