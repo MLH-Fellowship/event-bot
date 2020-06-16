@@ -2,7 +2,7 @@ class Session:
 
     def __init__(self):
         self.title = None
-        self.date = None
+        self.start = None
         self.description = None
 
     def __str__(self):

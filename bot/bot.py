@@ -30,14 +30,15 @@ async def check_schedule():
 
     while True:
         session = calendar.get_next_session()
-        await send_announcement(session)
+        if check_times(session):
+            await send_announcement(session)
         await asyncio.sleep(60)
 
 async def send_announcement(session):
     global events_channel
-    await events_channel.send(session)
+    await events_channel.send(str(session.start))
 
-def check_times(current_time, event_time):
+def check_times(event_time):
     return True
 
 @bot.command(description="Displays next event")
