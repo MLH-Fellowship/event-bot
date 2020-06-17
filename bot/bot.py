@@ -1,5 +1,6 @@
 import os
 import asyncio
+import datetime
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -30,16 +31,45 @@ async def check_schedule():
 
     while True:
         session = calendar.get_next_session()
-        if check_times(session):
-            await send_announcement(session)
+        announcement_time_first = (session.start - datetime.timedelta(minutes=30))
+        announcement_time_last = (session.start - datetime.timedelta(minutes=10))
+        if check_times(announcement_time_first):
+            await send_long_announcement(session)
+        elif check_times(announcement_time_last):
+            await send_short_announcement(session)
         await asyncio.sleep(60)
 
-async def send_announcement(session):
+async def send_long_announcement(session):
     global events_channel
-    await events_channel.send(str(session.start))
+    embed = discord.Embed(title=session.title,
+                          description=session.description)
+    await events_channel.send(embed=embed)
 
-def check_times(event_time):
-    return True
+async def send_short_announcement(session):
+    global events_channel
+    await events_channel.send(f'Just 10 minutes until we have {session.title}! :tada:\n {session.url}\n@Fellow')
+
+def check_times(announcement_time):
+    current_time = datetime.datetime.now()
+    current_year = current_time.strftime("%Y")
+    current_month = current_time.strftime("%m")
+    current_day = current_time.strftime("%d")
+    current_hour = current_time.strftime("%H")
+    current_minute = current_time.strftime("%M")
+
+    announcement_year = announcement_time.strftime("%Y")
+    announcement_month = announcement_time.strftime("%m")
+    announcement_day = announcement_time.strftime("%d")
+    announcement_hour = announcement_time.strftime("%H")
+    announcement_minute = announcement_time.strftime("%M")
+
+    if current_year == announcement_year and current_month == announcement_month and current_day == announcement_day:
+        if current_hour == announcement_hour and current_minute == announcement_minute:
+            return True
+        else:
+            return False
+    else:
+        return False
 
 @bot.command(description="Displays next event")
 async def next_session(ctx):

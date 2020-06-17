@@ -29,6 +29,7 @@ def get_next_session():
         cal_session.start = dateutil.parser.parse(
             next_session['start']['dateTime'])
         cal_session.title = next_session['summary']
+        cal_session.url = next_session['location']
         cal_session.description = get_description(next_session['description'])
         
     except:
@@ -54,6 +55,13 @@ def sort_calendar(sessions):
 
     return sorted_sessions
 
-
 def get_description(description):
-    print(description)
+    try:
+        start_index = description.find(
+            'Please describe this session in 3-5 sentences. This will be shared with the fellows. :')
+        end_index = description.find(
+            'What type of session is this?:', start_index + 86)
+        return description[start_index + 86:end_index]
+    except:
+        log.logger.warning(" - Description not from Calendly")
+        return description

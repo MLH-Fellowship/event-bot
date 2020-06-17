@@ -4,6 +4,10 @@ class Session:
         self.title = None
         self.start = None
         self.description = None
+        self.url = None
 
     def __str__(self):
         return self.title
+
+    def make_announcement(self):
+        pass
