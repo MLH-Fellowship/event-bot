@@ -26,9 +26,9 @@ async def is_admin(ctx):
 
 async def check_schedule():
     await bot.wait_until_ready()
-    global events_channel
+    global events_channel, fellow_role
     events_channel = bot.get_channel(int(os.getenv("DISCORD_EVENTS_ID")))
-
+    fellow_role = bot.get_guild(int(os.getenv("DISCORD_GUILD_ID"))).get_role(int(os.getenv("DISCORD_ROLE_ID"))) 
     while True:
         session = calendar.get_next_session()
         announcement_time_first = (session.start - datetime.timedelta(minutes=30))
@@ -40,7 +40,8 @@ async def check_schedule():
         await asyncio.sleep(60)
 
 async def send_long_announcement(session):
-    global events_channel
+    global events_channel, fellow_role
+    img_url = 'https://mlh.will-russell.com/img/discord-session.jpg'
     if session.description == None:
         embed = discord.Embed(title=session.title,
                               description=session.url,
@@ -50,14 +51,16 @@ async def send_long_announcement(session):
         embed = discord.Embed(title=session.title,
                               description=session.description,
                               url=session.url,
-                              footer=session.url,
                               colour=0x1D539F)
-
-    await events_channel.send(embed=embed)
+    if session.speaker != None:
+        embed.set_author(name=session.speaker)
+    embed.set_footer(text=session.url)
+    embed.set_image(url=img_url)
+    await events_channel.send(f'Hey {fellow_role.mention}s - we have session in 30 minutes! :tada:', embed=embed)
 
 async def send_short_announcement(session):
-    global events_channel
-    await events_channel.send(f'Just 10 minutes until we have {session.title}! :tada:\n {session.url}\n@Fellow')
+    global events_channel, fellow_role
+    await events_channel.send(f'Just 10 minutes until we have **{session.title}**! :tada:\n {session.url}\n{fellow_role.mention}')
 
 def check_times(announcement_time):
     current_time = datetime.datetime.now()

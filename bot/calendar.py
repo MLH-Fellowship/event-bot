@@ -28,21 +28,20 @@ def get_next_session():
     try:
         cal_session.start = dateutil.parser.parse(
             next_session['start']['dateTime'])
-        cal_session.title = get_title(
-            next_session['description'], next_session['summary'])
         cal_session.url = next_session['location']
+        cal_session.title = get_title(
+            next_session['description'], next_session['summary'], cal_session.url)
         cal_session.description = get_description(next_session['description'], cal_session.url)
     except:
         log.logger.warning(
             f" - Missing required JSON fields in event '{next_session['summary']}' on '{next_session['start']['dateTime']}'")
-    print(cal_session.description)
     return cal_session
 
 def sort_calendar(sessions):
     utc = pytz.UTC
     now = datetime.datetime.now()
 
-    # remove cancelled events
+    # Remove cancelled events
     sessions = [
         session for session in sessions if session['status'] == "confirmed"]
 
@@ -56,8 +55,13 @@ def sort_calendar(sessions):
 
     return sorted_sessions
 
-def get_title(description, summary):
+def get_title(description, summary, url):
     question1 = 'What is the title of this session?: '
+
+    localhost_url = 'https://organize.mlh.io'
+    if url[:len(localhost_url)] == localhost_url:
+        return summary
+
     try:
         start_index = description.find(question1)
         end_index = description.find(
@@ -84,3 +88,4 @@ def get_description(description, url):
     except:
         log.logger.warning(" - Description not from Calendly")
         return None
+
