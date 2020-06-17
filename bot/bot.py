@@ -41,8 +41,18 @@ async def check_schedule():
 
 async def send_long_announcement(session):
     global events_channel
-    embed = discord.Embed(title=session.title,
-                          description=session.description)
+    if session.description == None:
+        embed = discord.Embed(title=session.title,
+                              description=session.url,
+                              url=session.url,
+                              colour=0x1D539F)
+    else:
+        embed = discord.Embed(title=session.title,
+                              description=session.description,
+                              url=session.url,
+                              footer=session.url,
+                              colour=0x1D539F)
+
     await events_channel.send(embed=embed)
 
 async def send_short_announcement(session):

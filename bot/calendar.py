@@ -28,13 +28,14 @@ def get_next_session():
     try:
         cal_session.start = dateutil.parser.parse(
             next_session['start']['dateTime'])
-        cal_session.title = next_session['summary']
+        cal_session.title = get_title(
+            next_session['description'], next_session['summary'])
         cal_session.url = next_session['location']
-        cal_session.description = get_description(next_session['description'])
-        
+        cal_session.description = get_description(next_session['description'], cal_session.url)
     except:
         log.logger.warning(
             f" - Missing required JSON fields in event '{next_session['summary']}' on '{next_session['start']['dateTime']}'")
+    print(cal_session.description)
     return cal_session
 
 def sort_calendar(sessions):
@@ -55,13 +56,31 @@ def sort_calendar(sessions):
 
     return sorted_sessions
 
-def get_description(description):
+def get_title(description, summary):
+    question1 = 'What is the title of this session?: '
+    try:
+        start_index = description.find(question1)
+        end_index = description.find(
+            '<br>', start_index + len(question1))
+        return description[start_index + len(question1):end_index]
+    except:
+        log.logger.warning(" - Title not from Calendly. Falling back to event title")
+        return summary
+
+def get_description(description, url):
+    question1 = 'Please describe this session in 3-5 sentences. This will be shared with the fellows.'
+    start_answer = ': '
+    localhost_url = 'https://organize.mlh.io'
+    if url[:len(localhost_url)] == localhost_url:
+        end = description.find('<br>')
+        return description[:end]
     try:
         start_index = description.find(
-            'Please describe this session in 3-5 sentences. This will be shared with the fellows. :')
+            question1)
+        end_question_index = description.find(start_answer, start_index + len(question1))
         end_index = description.find(
-            'What type of session is this?:', start_index + 86)
-        return description[start_index + 86:end_index]
+            '<br>', start_index + len(question1))
+        return description[end_question_index + len(start_answer):end_index]
     except:
         log.logger.warning(" - Description not from Calendly")
-        return description
+        return None
