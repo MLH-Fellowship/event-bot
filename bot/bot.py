@@ -87,4 +87,8 @@ def check_times(announcement_time):
 @bot.command(description="Displays next event")
 async def next_session(ctx):
     session = calendar.get_next_session()
-    await ctx.send(str(session))
+    embed = discord.Embed(title=session.title,
+                          description=f'Starting at {str(session.start.strftime("%H:%M GMT on %B %d"))}',
+                          url=session.url,
+                          colour=0x1D539F)
+    await ctx.send("Here's the next session!", embed=embed)
