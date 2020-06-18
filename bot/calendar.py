@@ -88,7 +88,12 @@ def get_description(description, url):
         end_question_index = description.find(start_answer, start_index + len(question1))
         end_index = description.find(
             '<br>', start_index + len(question1))
-        return description[end_question_index + len(start_answer):end_index]
+        short_description = description[end_question_index +
+                                        len(start_answer):end_index]
+        if len(short_description) > 256:
+            return None
+        else:
+            return short_description
     except:
         log.logger.warning(" - Description not from Calendly")
         return None
