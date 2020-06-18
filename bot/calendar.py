@@ -66,7 +66,11 @@ def get_title(description, summary, url):
         start_index = description.find(question1)
         end_index = description.find(
             '<br>', start_index + len(question1))
-        return description[start_index + len(question1):end_index]
+        title = description[start_index + len(question1):end_index]
+        if len(title) > 256:
+            return summary
+        else:
+            return title
     except:
         log.logger.warning(" - Title not from Calendly. Falling back to event title")
         return summary
