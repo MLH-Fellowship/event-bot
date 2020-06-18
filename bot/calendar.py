@@ -88,4 +88,3 @@ def get_description(description, url):
     except:
         log.logger.warning(" - Description not from Calendly")
         return None
-

@@ -56,7 +56,7 @@ async def send_long_announcement(session):
         embed.set_author(name=session.speaker)
     embed.set_footer(text=session.url)
     embed.set_image(url=img_url)
-    await events_channel.send(f'Hey {fellow_role.mention}s - we have session in 30 minutes! :tada:', embed=embed)
+    await events_channel.send(f'Hey {fellow_role.mention}s - we have session in 30 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
 
 async def send_short_announcement(session):
     global events_channel, fellow_role
@@ -91,4 +91,8 @@ async def next_session(ctx):
                           description=f'Starting at {str(session.start.strftime("%H:%M GMT on %B %d"))}',
                           url=session.url,
                           colour=0x1D539F)
-    await ctx.send("Here's the next session!", embed=embed)
+    await ctx.send(f'Here\'s the next session at {str(session.start.strftime("%H:%M GMT on %B %d"))}!', embed=embed)
+
+@bot.command(description="Set timezone in server to GMT. Only for Friend Time")
+async def set_timezone(ctx):
+    await ctx.send("-ft set Atlantic/Reykjavik")
