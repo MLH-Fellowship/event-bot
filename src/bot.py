@@ -1,4 +1,5 @@
 import os
+import sys
 import asyncio
 import datetime
 import discord
@@ -12,10 +13,24 @@ bot = commands.Bot(command_prefix='?')
 
 def main():
     load_dotenv()
-    
-    global events_channel
+
+    global events_channel_id, guild_id, role_id, role_ttp_id
+    try:
+        token = os.getenv("DISCORD_TOKEN")
+        events_channel_id = int(os.getenv("DISCORD_EVENTS_ID"))
+        guild_id = int(os.getenv("DISCORD_GUILD_ID"))
+        role_id = int(os.getenv("DISCORD_ROLE_ID"))
+        role_ttp_id = int(os.getenv("DISCORD_ROLE_TTP_ID"))
+        if not token:
+            print(f"msg=\"Token was missing!\"")
+            sys.exit(14)
+    except Exception as e:
+        print(f"msg=\"error parsing environment variables\", error=\"{e}\"")
+        sys.exit(14)
+
     bot.loop.create_task(check_schedule())
-    bot.run(os.getenv("DISCORD_TOKEN"))
+    bot.run(token)
+
 
 '''
 @bot.check
@@ -26,11 +41,10 @@ async def is_admin(ctx):
 
 async def check_schedule():
     await bot.wait_until_ready()
-    global events_channel, fellow_role, ttp_fellow_role
-    events_channel = bot.get_channel(int(os.getenv("DISCORD_EVENTS_ID")))
-    fellow_role = bot.get_guild(int(os.getenv("DISCORD_GUILD_ID"))).get_role(int(os.getenv("DISCORD_ROLE_ID"))) 
-    fellow_ttp_role = bot.get_guild(int(os.getenv("DISCORD_GUILD_ID"))).get_role(int(os.getenv("DISCORD_ROLE_TTP_ID"))) 
-
+    global events_channel, fellow_role, ttp_fellow_role, events_channel_id, guild_id, role_id, role_ttp_id
+    events_channel = bot.get_channel(events_channel_id)
+    fellow_role = bot.get_guild(guild_id).get_role(role_id) 
+    fellow_ttp_role = bot.get_guild(guild_id).get_role(role_ttp_id) 
     while True:
         session = calendar.get_next_session()
         announcement_time_first = (session.start - datetime.timedelta(minutes=15))

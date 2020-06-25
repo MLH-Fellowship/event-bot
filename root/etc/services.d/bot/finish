@@ -1,0 +1,4 @@
+#!/usr/bin/execlineb -S1
+if { s6-test ${1} -eq 14 }
+
+s6-svscanctl -t /var/run/s6/services

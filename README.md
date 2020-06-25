@@ -2,7 +2,7 @@
 
 Discord bot that announces upcoming sessions on the Additional Fun & Educational Events calendar!
 
-Inspired by the [Hack Quarantine](https://hackquarantine.com) [Calendar Bot](https://github.com/HackQuarantine/calendar-bot) used to automatically make announcements from their calendar. 
+Inspired by the [Hack Quarantine](https://hackquarantine.com) [Calendar Bot](https://github.com/HackQuarantine/calendar-bot) used to automatically make announcements from their calendar.
 
 ![Example](img/example.png)
 
@@ -26,5 +26,5 @@ _Make sure to fill the `.env` file with the required fields_
 ## Run
 
 ```
-docker run --rm -d -p 444:444 session-bot
+docker run --name session-bot --env-file .env -d session-bot
 ```
