@@ -26,5 +26,5 @@ _Make sure to fill the `.env` file with the required fields_
 ## Run
 
 ```
-python -m bot
+docker run --rm -d -p 443:443 pin-bot
 ```
