@@ -12,13 +12,7 @@ Make sure to set your Google Calendar to the same timezone as the Discord Bot. I
 
 ```
 docker build -t pin-bot .
-cat TOKEN="MY_TOKEN" > .env
-```
-
-Run the following or run `setup.sh`
-```
-cat src/.example.env > src/.env
-mkdir logs
+cp example.env .env
 ```
 
 _Make sure to fill the `.env` file with the required fields_

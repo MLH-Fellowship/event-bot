@@ -1,5 +1,4 @@
 FROM python:alpine AS s6-alpine
-LABEL maintainer="Aleksandar Puharic xzero@elite7haers.net"
 
 ARG S6_OVERLAY_RELEASE=https://github.com/just-containers/s6-overlay/releases/latest/download/s6-overlay-amd64.tar.gz
 ENV S6_OVERLAY_RELEASE=${S6_OVERLAY_RELEASE}
@@ -17,7 +16,7 @@ RUN apk upgrade --update --no-cache \
 
 
 
-COPY requirements.txt /requirements.txt
+COPY src/requirements.txt /requirements.txt
 RUN \
     apk add --no-cache --virtual=build-dependencies \
       gcc \

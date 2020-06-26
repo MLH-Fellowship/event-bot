@@ -4,9 +4,18 @@ import asyncio
 import datetime
 import discord
 from discord.ext import commands
+from discord.http import LoginFailure
 from dotenv import load_dotenv
 from schedule import calendar
 from util import logging
+
+def my_except_hook(exctype, value, traceback):
+    if exctype == LoginFailure:
+        print(value)
+        sys.exit(14)
+    else:
+        sys.__excepthook__(exctype, value, traceback)
+sys.excepthook = my_except_hook
 
 logging.init()
 bot = commands.Bot(command_prefix='?')
@@ -17,10 +26,15 @@ def main():
     global events_channel_id, guild_id, role_id, role_ttp_id
     try:
         token = os.getenv("DISCORD_TOKEN")
+        print("token=<hiden>")
         events_channel_id = int(os.getenv("DISCORD_EVENTS_ID"))
+        print(f"events_channel_id={events_channel_id}")
         guild_id = int(os.getenv("DISCORD_GUILD_ID"))
+        print(f"guild_id={guild_id}")
         role_id = int(os.getenv("DISCORD_ROLE_ID"))
+        print(f"role_id={role_id}")
         role_ttp_id = int(os.getenv("DISCORD_ROLE_TTP_ID"))
+        print(f"role_ttp_id={role_ttp_id}")
         if not token:
             print(f"msg=\"Token was missing!\"")
             sys.exit(14)
