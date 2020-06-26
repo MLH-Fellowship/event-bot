@@ -44,16 +44,28 @@ async def check_schedule():
 async def send_long_announcement(session):
     global events_channel, fellow_role, ttp_fellow_role
     img_url = 'https://mlh.will-russell.com/img/discord-session.jpg'
+    
     if session.description == None:
-        embed = discord.Embed(title=session.title,
-                              description=session.url,
-                              url=session.url,
-                              colour=0x1D539F)
+        if check_url(session.url):
+            embed = discord.Embed(title=session.title,
+                                description=session.url,
+                                url=session.url,
+                                colour=0x1D539F)
+        else:
+            embed = discord.Embed(title=session.title,
+                                description=session.url,
+                                colour=0x1D539F)
     else:
-        embed = discord.Embed(title=session.title,
-                              description=session.description,
-                              url=session.url,
-                              colour=0x1D539F)
+        if check_url(session.url):
+            embed = discord.Embed(title=session.title,
+                                description=session.description,
+                                url=session.url,
+                                colour=0x1D539F)
+        else:
+            embed = discord.Embed(title=session.title,
+                                description=session.description,
+                                colour=0x1D539F)    
+        
     if session.speaker != None:
         embed.set_author(name=session.speaker)
     embed.set_footer(text=session.url)
@@ -61,7 +73,7 @@ async def send_long_announcement(session):
     await events_channel.send(f'Hey {fellow_role.mention}s and {fellow_ttp_role.mention} - we have session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
 
 async def send_short_announcement(session):
-    global events_channel, fellow_role
+    global events_channel, fellow_role, ttp_fellow_role
     await events_channel.send(f'Just 3 minutes until we have **{session.title}**! :tada:\n {session.url}\n{fellow_role.mention} {fellow_ttp_role.mention}')
 
 def check_times(announcement_time):
@@ -83,6 +95,12 @@ def check_times(announcement_time):
             return True
         else:
             return False
+    else:
+        return False
+
+def check_url(url):
+    if session.url[:8] == "https://":
+        return True
     else:
         return False
 
