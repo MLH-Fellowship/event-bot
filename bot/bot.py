@@ -29,7 +29,7 @@ async def check_schedule():
     global events_channel, fellow_role, ttp_fellow_role
     events_channel = bot.get_channel(int(os.getenv("DISCORD_EVENTS_ID")))
     fellow_role = bot.get_guild(int(os.getenv("DISCORD_GUILD_ID"))).get_role(int(os.getenv("DISCORD_ROLE_ID"))) 
-    fellow_role = bot.get_guild(int(os.getenv("DISCORD_GUILD_ID"))).get_role(int(os.getenv("DISCORD_ROLE_TTP_ID"))) 
+    fellow_ttp_role = bot.get_guild(int(os.getenv("DISCORD_GUILD_ID"))).get_role(int(os.getenv("DISCORD_ROLE_TTP_ID"))) 
 
     while True:
         session = calendar.get_next_session()
@@ -107,8 +107,14 @@ def check_url(url):
 @bot.command(description="Displays next event")
 async def next_session(ctx):
     session = calendar.get_next_session()
-    embed = discord.Embed(title=session.title,
-                          description=f'Starting at {str(session.start.strftime("%H:%M GMT on %B %d"))}',
-                          url=session.url,
-                          colour=0x1D539F)
+    if check_url(session.url):
+        embed = discord.Embed(title=session.title,
+                             description=f'Starting at {str(session.start.strftime("%H:%M GMT on %B %d"))}',
+                             url=session.url,
+                             colour=0x1D539F)
+    else:
+        embed = discord.Embed(title=session.title,
+                              description=f'Starting at {str(session.start.strftime("%H:%M GMT on %B %d"))}',
+                              colour=0x1D539F)
+
     await ctx.send(f'Here\'s the next session at {str(session.start.strftime("%H:%M GMT on %B %d"))}!', embed=embed)
