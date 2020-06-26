@@ -6,5 +6,5 @@ RUN pip install -r requirements.txt
 RUN mkdir logs
 COPY src /app
 
-EXPOSE 443
+EXPOSE 444
 CMD [ "python", "bot.py"]
