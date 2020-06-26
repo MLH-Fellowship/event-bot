@@ -59,7 +59,7 @@ def get_title(description, summary, url):
     question1 = 'What is the title of this session?: '
 
     localhost_url = 'https://organize.mlh.io'
-    if url[:len(localhost_url)] == localhost_url:
+    if check_url(url):
         return summary
 
     try:
@@ -79,7 +79,7 @@ def get_description(description, url):
     question1 = 'Please describe this session in 3-5 sentences. This will be shared with the fellows.'
     start_answer = ': '
     localhost_url = 'https://organize.mlh.io'
-    if url[:len(localhost_url)] == localhost_url:
+    if check_url(url):
         end = description.find('<br>')
         return description[:end]
     try:
@@ -97,3 +97,10 @@ def get_description(description, url):
     except:
         log.logger.warning(" - Description not from Calendly")
         return None
+
+def check_url(url):
+    localhost_url = 'https://organize.mlh.io'
+    if url[:len(localhost_url)] == localhost_url or url[:8] != 'https://':
+        return True
+    else:
+        return False
