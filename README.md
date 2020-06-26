@@ -26,5 +26,5 @@ _Make sure to fill the `.env` file with the required fields_
 ## Run
 
 ```
-docker run --rm -d -p 443:443 pin-bot
+docker run --rm -d -p 444:444 session-bot
 ```
