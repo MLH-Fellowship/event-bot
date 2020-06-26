@@ -99,7 +99,7 @@ def check_times(announcement_time):
         return False
 
 def check_url(url):
-    if session.url[:8] == "https://":
+    if url[:8] == "https://":
         return True
     else:
         return False
