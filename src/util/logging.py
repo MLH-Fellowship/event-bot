@@ -25,8 +25,3 @@ def init():
 
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
-
-def warn(message):
-    global logger
-    logger.warning(message)
-    # send discord message

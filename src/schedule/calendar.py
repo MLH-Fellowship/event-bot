@@ -4,8 +4,8 @@ import os
 import json
 import datetime
 import dateutil.parser
-from .session import Session
-from . import logging as log
+from schedule.session import Session
+from util import logging as log
 from dotenv import load_dotenv
 
 def get_calendar():

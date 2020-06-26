@@ -4,8 +4,8 @@ import datetime
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from . import calendar
-from . import logging
+from schedule import calendar
+from util import logging
 
 logging.init()
 bot = commands.Bot(command_prefix='?')
@@ -118,3 +118,6 @@ async def next_session(ctx):
                               colour=0x1D539F)
 
     await ctx.send(f'Here\'s the next session at {str(session.start.strftime("%H:%M GMT on %B %d"))}!', embed=embed)
+
+if __name__ == '__main__':
+    main()
