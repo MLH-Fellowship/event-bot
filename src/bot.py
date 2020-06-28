@@ -55,10 +55,12 @@ async def is_admin(ctx):
 
 async def check_schedule():
     await bot.wait_until_ready()
+
     global events_channel, fellow_role, ttp_fellow_role, events_channel_id, guild_id, role_id, role_ttp_id
     events_channel = bot.get_channel(events_channel_id)
     fellow_role = bot.get_guild(guild_id).get_role(role_id) 
     ttp_fellow_role = bot.get_guild(guild_id).get_role(role_ttp_id) 
+
     while True:
         session = calendar.get_next_session()
         announcement_time_first = (session.start - datetime.timedelta(minutes=15))
