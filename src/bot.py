@@ -58,7 +58,7 @@ async def check_schedule():
     global events_channel, fellow_role, ttp_fellow_role, events_channel_id, guild_id, role_id, role_ttp_id
     events_channel = bot.get_channel(events_channel_id)
     fellow_role = bot.get_guild(guild_id).get_role(role_id) 
-    fellow_ttp_role = bot.get_guild(guild_id).get_role(role_ttp_id) 
+    ttp_fellow_role = bot.get_guild(guild_id).get_role(role_ttp_id) 
     while True:
         session = calendar.get_next_session()
         announcement_time_first = (session.start - datetime.timedelta(minutes=15))
@@ -98,11 +98,11 @@ async def send_long_announcement(session):
         embed.set_author(name=session.speaker)
     embed.set_footer(text=session.url)
     embed.set_image(url=img_url)
-    await events_channel.send(f'Hey {fellow_role.mention}s and {fellow_ttp_role.mention} - we have session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
+    await events_channel.send(f'Hey {fellow_role.mention}s and {ttp_fellow_role.mention} - we have session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
 
 async def send_short_announcement(session):
     global events_channel, fellow_role, ttp_fellow_role
-    await events_channel.send(f'Just 3 minutes until we have **{session.title}**! :tada:\n {session.url}\n{fellow_role.mention} {fellow_ttp_role.mention}')
+    await events_channel.send(f'Just 3 minutes until we have **{session.title}**! :tada:\n {session.url}\n{fellow_role.mention} {ttp_fellow_role.mention}')
 
 def check_times(announcement_time):
     current_time = datetime.datetime.now()
