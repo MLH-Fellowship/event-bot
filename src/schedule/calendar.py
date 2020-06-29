@@ -17,26 +17,29 @@ def get_calendar():
 
 def get_next_session():
     now = datetime.datetime.now()
-    try:
-        sessions = get_calendar()['items']
-    except:
-        log.logger.warning("Cannot fetch events from calendar/malformed response")
-    sorted_sessions = sort_calendar(sessions)
     cal_session = Session()
-    next_session = sorted_sessions[0]
 
     try:
+        sessions = get_calendar()['items']
+        sorted_sessions = sort_calendar(sessions)
+        next_session = sorted_sessions[0]
+        
+        try:
         cal_session.start = dateutil.parser.parse(
             next_session['start']['dateTime'])
         cal_session.url = next_session['location']
         cal_session.title = get_title(
             next_session['description'], next_session['summary'], cal_session.url)
         cal_session.description = get_description(next_session['description'], cal_session.url)
+        
+        except:
+            log.logger.warning(f" - Missing required JSON fields in event '{next_session['summary']}' on '{next_session['start']['dateTime']}'")
+            
     except:
-        log.logger.warning(
-            f" - Missing required JSON fields in event '{next_session['summary']}' on '{next_session['start']['dateTime']}'")
-    return cal_session
+        log.logger.warning("Cannot fetch events from calendar/malformed response")
 
+    return cal_session
+            
 def sort_calendar(sessions):
     utc = pytz.UTC
     now = datetime.datetime.now()
