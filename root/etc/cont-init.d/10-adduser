@@ -1,0 +1,5 @@
+#!/usr/bin/with-contenv sh
+
+PUID=${PUID:-911}
+adduser --uid "$PUID" bot
+chown -R bot:bot /app

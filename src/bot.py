@@ -1,21 +1,50 @@
 import os
+import sys
 import asyncio
 import datetime
 import discord
 from discord.ext import commands
+from discord.http import LoginFailure
 from dotenv import load_dotenv
 from schedule import calendar
 from util import logging
+
+def my_except_hook(exctype, value, traceback):
+    if exctype == LoginFailure:
+        print(value)
+        sys.exit(14)
+    else:
+        sys.__excepthook__(exctype, value, traceback)
+sys.excepthook = my_except_hook
 
 logging.init()
 bot = commands.Bot(command_prefix='?')
 
 def main():
     load_dotenv()
-    
-    global events_channel
+
+    global events_channel_id, guild_id, role_id, role_ttp_id
+    try:
+        token = os.getenv("DISCORD_TOKEN")
+        print("token=<hiden>")
+        events_channel_id = int(os.getenv("DISCORD_EVENTS_ID"))
+        print(f"events_channel_id={events_channel_id}")
+        guild_id = int(os.getenv("DISCORD_GUILD_ID"))
+        print(f"guild_id={guild_id}")
+        role_id = int(os.getenv("DISCORD_ROLE_ID"))
+        print(f"role_id={role_id}")
+        role_ttp_id = int(os.getenv("DISCORD_ROLE_TTP_ID"))
+        print(f"role_ttp_id={role_ttp_id}")
+        if not token:
+            print(f"msg=\"Token was missing!\"")
+            sys.exit(14)
+    except Exception as e:
+        print(f"msg=\"error parsing environment variables\", error=\"{e}\"")
+        sys.exit(14)
+
     bot.loop.create_task(check_schedule())
-    bot.run(os.getenv("DISCORD_TOKEN"))
+    bot.run(token)
+
 
 '''
 @bot.check
@@ -26,10 +55,11 @@ async def is_admin(ctx):
 
 async def check_schedule():
     await bot.wait_until_ready()
-    global events_channel, fellow_role, ttp_fellow_role
-    events_channel = bot.get_channel(int(os.getenv("DISCORD_EVENTS_ID")))
-    fellow_role = bot.get_guild(int(os.getenv("DISCORD_GUILD_ID"))).get_role(int(os.getenv("DISCORD_ROLE_ID"))) 
-    ttp_fellow_role = bot.get_guild(int(os.getenv("DISCORD_GUILD_ID"))).get_role(int(os.getenv("DISCORD_ROLE_TTP_ID"))) 
+
+    global events_channel, fellow_role, ttp_fellow_role, events_channel_id, guild_id, role_id, role_ttp_id
+    events_channel = bot.get_channel(events_channel_id)
+    fellow_role = bot.get_guild(guild_id).get_role(role_id) 
+    ttp_fellow_role = bot.get_guild(guild_id).get_role(role_ttp_id) 
 
     while True:
         session = calendar.get_next_session()
@@ -74,7 +104,7 @@ async def send_long_announcement(session):
 
 async def send_short_announcement(session):
     global events_channel, fellow_role, ttp_fellow_role
-    await events_channel.send(f'Just 3 minutes until we have **{session.title}**! :tada:\n {session.url}\n{fellow_role.mention} {ttp_fellow_row.mention}')
+    await events_channel.send(f'Just 3 minutes until we have **{session.title}**! :tada:\n {session.url}\n{fellow_role.mention} {ttp_fellow_role.mention}')
 
 def check_times(announcement_time):
     current_time = datetime.datetime.now()
