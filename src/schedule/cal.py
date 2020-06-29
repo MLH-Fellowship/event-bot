@@ -5,7 +5,6 @@ import json
 import datetime
 import dateutil.parser
 from schedule.session import Session
-from util import logging as log
 from dotenv import load_dotenv
 
 def get_calendar():
@@ -25,18 +24,18 @@ def get_next_session():
         next_session = sorted_sessions[0]
         
         try:
-        cal_session.start = dateutil.parser.parse(
-            next_session['start']['dateTime'])
-        cal_session.url = next_session['location']
-        cal_session.title = get_title(
-            next_session['description'], next_session['summary'], cal_session.url)
-        cal_session.description = get_description(next_session['description'], cal_session.url)
+            cal_session.start = dateutil.parser.parse(
+                next_session['start']['dateTime'])
+            cal_session.url = next_session['location']
+            cal_session.title = get_title(
+                next_session['description'], next_session['summary'], cal_session.url)
+            cal_session.description = get_description(next_session['description'], cal_session.url)
         
         except:
-            log.logger.warning(f" - Missing required JSON fields in event '{next_session['summary']}' on '{next_session['start']['dateTime']}'")
+            print(f" - Missing required JSON fields in event '{next_session['summary']}' on '{next_session['start']['dateTime']}'")
             
     except:
-        log.logger.warning("Cannot fetch events from calendar/malformed response")
+        print("Cannot fetch events from calendar/malformed response")
 
     return cal_session
             
@@ -75,7 +74,7 @@ def get_title(description, summary, url):
         else:
             return title
     except:
-        log.logger.warning(" - Title not from Calendly. Falling back to event title")
+        print(" - Title not from Calendly. Falling back to event title")
         return summary
 
 def get_description(description, url):
@@ -98,7 +97,7 @@ def get_description(description, url):
         else:
             return short_description
     except:
-        log.logger.warning(" - Description not from Calendly")
+        print(" - Description not from Calendly")
         return None
 
 def check_url(url):
