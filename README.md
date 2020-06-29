@@ -11,7 +11,7 @@ Inspired by the [Hack Quarantine](https://hackquarantine.com) [Calendar Bot](htt
 Make sure to set your Google Calendar to the same timezone as the Discord Bot. In this case, it's the timezone of the Compute Engine on Google Cloud.
 
 ```
-docker build -t pin-bot .
+docker build -t session-bot .
 cp example.env .env
 ```
 
