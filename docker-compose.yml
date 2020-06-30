@@ -2,7 +2,7 @@
 version: '3.8'
 
 services:
-  sesh-bot:
+  session_bot:
     build: .
     env_file: .env
     logging:
