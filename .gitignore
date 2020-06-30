@@ -3,3 +3,5 @@
 .env
 *.log
 __pycache__
+token.pickle
+credentials.json

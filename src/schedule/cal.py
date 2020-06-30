@@ -1,27 +1,50 @@
+from __future__ import print_function
 import requests
-import pytz
 import os
 import json
 import datetime
 import dateutil.parser
 from schedule.session import Session
 from dotenv import load_dotenv
+import datetime
+import pickle
+import os.path
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
 
 def get_calendar():
     load_dotenv()
-    r = requests.get(
-        f'https://www.googleapis.com/calendar/v3/calendars/{os.getenv("GCAL_ID")}/events?key={os.getenv("GCAL_KEY")}'
-    )
-    return r.json()
+    SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+
+    creds = None
+    if os.path.exists('/app/token.pickle'):
+        with open('/app/token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                '/app/credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open('/app/token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
+
+    service = build('calendar', 'v3', credentials=creds)
+    now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+    events_result = service.events().list(calendarId=os.getenv("GCAL_ID"), timeMin=now,
+                                          maxResults=1, singleEvents=True,
+                                          orderBy='startTime').execute()
+    events = events_result.get('items', [])
+    return events
 
 def get_next_session():
     now = datetime.datetime.now()
     cal_session = Session()
-
     try:
-        sessions = get_calendar()['items']
-        sorted_sessions = sort_calendar(sessions)
-        next_session = sorted_sessions[0]
+        sessions = get_calendar()
+        next_session = sessions[0]
         
         try:
             cal_session.start = dateutil.parser.parse(
@@ -38,24 +61,6 @@ def get_next_session():
         print("Cannot fetch events from calendar/malformed response")
 
     return cal_session
-            
-def sort_calendar(sessions):
-    utc = pytz.UTC
-    now = datetime.datetime.now()
-
-    # Remove cancelled events
-    sessions = [
-        session for session in sessions if session['status'] == "confirmed"]
-
-    # Sort events in chronological order 
-    sorted_sessions = sorted(
-        sessions, key=lambda x: dateutil.parser.parse(x['start']['dateTime']))
-    for session in sessions:
-        start = dateutil.parser.parse(session['start']['dateTime'])
-        if start.replace(tzinfo=utc) < now.replace(tzinfo=utc):
-            sorted_sessions.remove(session)
-
-    return sorted_sessions
 
 def get_title(description, summary, url):
     question1 = 'What is the title of this session?: '
