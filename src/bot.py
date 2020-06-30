@@ -91,7 +91,7 @@ async def send_long_announcement(session):
         embed.set_author(name=session.speaker)
     embed.set_footer(text=session.url)
     embed.set_image(url=IMG_URL)
-    await events_channel.send(f'Hey {fellow_role.mention}s and {ttp_fellow_role.mention} - we have session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
+    await events_channel.send(f'Hey {fellow_role.mention}s and {ttp_fellow_role.mention}s - We have a session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
 
 async def send_short_announcement(session):
     global events_channel, fellow_role, ttp_fellow_role

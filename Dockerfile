@@ -15,7 +15,9 @@ RUN apk upgrade --update --no-cache \
     && rm /tmp/s6overlay.tar.gz
 
 
-
+WORKDIR /app
+COPY credentials.json /app/credentials.json
+COPY token.pickle /app/token.pickle
 COPY src/requirements.txt /requirements.txt
 RUN \
     apk add --no-cache --virtual=build-dependencies \
