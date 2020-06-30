@@ -22,3 +22,11 @@ _Make sure to fill the `.env` file with the required fields_
 ```
 docker run --name session-bot --env-file .env -d session-bot
 ```
+
+Alternatively build and run with `docker-compose`:
+
+```bash
+docker-compose build
+docker-compose up -d
+docker-compose logs -f
+```
