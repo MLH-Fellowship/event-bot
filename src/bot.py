@@ -66,7 +66,7 @@ async def send_long_announcement(session):
     global events_channel, fellow_role, ttp_fellow_role
     IMG_URL = 'https://mlh.will-russell.com/img/discord-session.jpg'
     
-    if session.description == None:
+    if session.description == None or len(session.description) > 255:
         if check_url(session.url):
             embed = discord.Embed(title=session.title,
                                 description=session.url,
