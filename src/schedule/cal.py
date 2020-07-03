@@ -97,7 +97,7 @@ def get_description(description, url):
             '<br>', start_index + len(question1))
         short_description = description[end_question_index +
                                         len(start_answer):end_index]
-        if len(short_description) > 256:
+        if len(short_description) > 255:
             return None
         else:
             return short_description
