@@ -42,8 +42,8 @@ def get_calendar():
 def get_next_session():
     now = datetime.datetime.now()
     cal_session = Session()
+    sessions = get_calendar()
     try:
-        sessions = get_calendar()
         next_session = sessions[0]
         
         try:

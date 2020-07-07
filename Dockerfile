@@ -18,7 +18,7 @@ RUN apk upgrade --update --no-cache \
 WORKDIR /app
 COPY credentials.json /app/credentials.json
 COPY token.pickle /app/token.pickle
-COPY src/requirements.txt /requirements.txt
+COPY requirements.txt /requirements.txt
 RUN \
     apk add --no-cache --virtual=build-dependencies \
       gcc \
@@ -30,7 +30,7 @@ RUN \
 	/root/.cache \
 	/tmp/*
 
-COPY src /app
+COPY app /app
 
 ADD root /
 # Init
