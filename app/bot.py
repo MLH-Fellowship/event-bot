@@ -133,11 +133,11 @@ def get_time_diff(announcement_time):
     if (diff.total_seconds() < 0):
         return "happening NOW!"
     elif diff.total_seconds() < SECONDS_10HR:
-        return "in " + str(diff)[:5]
+        return "in " + str(diff)[:4] + " hr"
     elif diff.total_seconds() < SECONDS_24HR:
-        return "in " + str(diff)[:4]
+        return "in " + str(diff)[:5] + "hr"
     else: #if over 24 hours a way
-        return "in " + str(diff)[:11]
+        return "in " + str(diff)[:11] + "hr"
 
 def check_url(url):
     if url[:8] == "https://":
