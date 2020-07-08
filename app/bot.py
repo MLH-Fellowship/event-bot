@@ -131,7 +131,7 @@ def get_time_diff(announcement_time):
     if (diff.total_seconds() < 0):
         return "happening NOW!"
     else:
-        return "in" + diff
+        return "in" + str(diff)
 
 def check_url(url):
     if url[:8] == "https://":
