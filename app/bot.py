@@ -1,6 +1,7 @@
 import os
 import sys
 import asyncio
+import pytz
 import datetime
 import discord
 from discord.ext import commands
@@ -22,8 +23,8 @@ bot = commands.Bot(command_prefix='?')
 
 def main():
     load_dotenv()
-
-    global events_channel_id, guild_id, role_id, role_ttp_id
+    global events_channel_id, guild_id, role_id, role_ttp_id, utc
+    utc=pytz.UTC
     try:
         token = os.getenv("DISCORD_TOKEN")
         events_channel_id = int(os.getenv("DISCORD_EVENTS_ID"))
@@ -51,6 +52,9 @@ async def check_schedule():
     while True:
         session = cal.get_next_session()
         if session != None:
+            activity = discord.Activity(name=f"{session.title} {get_time_diff(session.start)}",
+                                        type=discord.ActivityType.watching)
+            await bot.change_presence(status=discord.Status.online, activity=activity)
             try:
                 announcement_time_first = (session.start - datetime.timedelta(minutes=15))
                 announcement_time_last = (session.start - datetime.timedelta(minutes=3))
@@ -65,7 +69,6 @@ async def check_schedule():
 async def send_long_announcement(session):
     global events_channel, fellow_role, ttp_fellow_role
     IMG_URL = 'https://mlh.will-russell.com/img/discord-session.jpg'
-    
     if session.description == None or len(session.description) > 255:
         if check_url(session.url):
             embed = discord.Embed(title=session.title,
@@ -118,6 +121,17 @@ def check_times(announcement_time):
             return False
     else:
         return False
+
+def get_time_diff(announcement_time):
+    global utc
+    current_time = datetime.datetime.now()
+    current_time = current_time.replace(tzinfo=utc)
+    announcement_time = announcement_time.replace(tzinfo=utc)
+    diff = announcement_time - current_time
+    if (diff.total_seconds() < 0):
+        return "happening NOW!"
+    else:
+        return "in" + diff
 
 def check_url(url):
     if url[:8] == "https://":
