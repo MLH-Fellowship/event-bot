@@ -128,11 +128,15 @@ def get_time_diff(announcement_time):
     current_time = current_time.replace(tzinfo=utc)
     announcement_time = announcement_time.replace(tzinfo=utc)
     diff = announcement_time - current_time
+    SECONDS_24HR = 86400
+    SECONDS_10HR = 36000
     if (diff.total_seconds() < 0):
         return "happening NOW!"
-    elif diff.total_seconds() < 86400:
+    elif diff.total_seconds() < SECONDS_10HR:
         return "in " + str(diff)[:5]
-    else:
+    elif diff.total_seconds() < SECONDS_24HR:
+        return "in " + str(diff)[:4]
+    else: #if over 24 hours a way
         return "in " + str(diff)[:11]
 
 def check_url(url):
