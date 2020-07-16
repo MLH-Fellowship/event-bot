@@ -23,7 +23,7 @@ bot = commands.Bot(command_prefix='?')
 
 def main():
     load_dotenv()
-    global events_channel_id, guild_id, role_id, role_ttp_id, utc
+    global events_channel_id, guild_id, role_id, role_ttp_id, role_techtonica_id, utc
     utc=pytz.UTC
     try:
         token = os.getenv("DISCORD_TOKEN")
@@ -31,6 +31,7 @@ def main():
         guild_id = int(os.getenv("DISCORD_GUILD_ID"))
         role_id = int(os.getenv("DISCORD_ROLE_ID"))
         role_ttp_id = int(os.getenv("DISCORD_ROLE_TTP_ID"))
+        role_techtonica_id = int(os.getenv("DISCORD_ROLE_TECHTONICA_ID"))
         if not token:
             print(f"msg=\"Token was missing!\"")
             sys.exit(14)
@@ -44,10 +45,11 @@ def main():
 async def check_schedule():
     await bot.wait_until_ready()
 
-    global events_channel, fellow_role, ttp_fellow_role, events_channel_id, guild_id, role_id, role_ttp_id
+    global events_channel, fellow_role, ttp_fellow_role, events_channel_id, guild_id, role_id, role_ttp_id, role_techtonica_id
     events_channel = bot.get_channel(events_channel_id)
     fellow_role = bot.get_guild(guild_id).get_role(role_id) 
-    ttp_fellow_role = bot.get_guild(guild_id).get_role(role_ttp_id) 
+    ttp_fellow_role = bot.get_guild(guild_id).get_role(role_ttp_id)
+    role_techtonica_id = bot.get_guild(guild_id).get_role(role_techtonica_id)
 
     while True:
         session = cal.get_next_session()
@@ -67,7 +69,7 @@ async def check_schedule():
         await asyncio.sleep(60)
 
 async def send_long_announcement(session):
-    global events_channel, fellow_role, ttp_fellow_role
+    global events_channel, fellow_role, ttp_fellow_role, role_techtonica_id
     IMG_URL = 'https://mlh.will-russell.com/img/discord-session.jpg'
     if session.description == None or len(session.description) > 255:
         if check_url(session.url):
@@ -94,11 +96,11 @@ async def send_long_announcement(session):
         embed.set_author(name=session.speaker)
     embed.set_footer(text=session.url)
     embed.set_image(url=IMG_URL)
-    await events_channel.send(f'Hey {fellow_role.mention}s and {ttp_fellow_role.mention}s - We have a session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
+    await events_channel.send(f'Hey {fellow_role.mention}s, {ttp_fellow_role.mention}s, and {role_techtonica_id.mention} - We have a session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
 
 async def send_short_announcement(session):
-    global events_channel, fellow_role, ttp_fellow_role
-    await events_channel.send(f'Just 3 minutes until we have **{session.title}**! :tada:\n {session.url}\n{fellow_role.mention} {ttp_fellow_role.mention}')
+    global events_channel, fellow_role, ttp_fellow_role, role_techtonica_id
+    await events_channel.send(f'Just 3 minutes until we have **{session.title}**! :tada:\n {session.url}\n{fellow_role.mention} {ttp_fellow_role.mention} {role_techtonica_id.mention}')
 
 def check_times(announcement_time):
     current_time = datetime.datetime.now()
