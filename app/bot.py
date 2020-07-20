@@ -54,8 +54,16 @@ async def check_schedule():
     while True:
         session = cal.get_next_session()
         if session != None:
-            activity = discord.Activity(name=f"{session.title} {get_time_diff(session.start)}",
-                                        type=discord.ActivityType.watching)
+            twitch_url = "https://twitch.tv"
+            title = f"{session.title} {get_time_diff(session.start)}"
+            if session.url[:len(twitch_url)] == twitch_url:
+                activity = discord.Streaming(name=title,
+                                             details=title,
+                                             url=session.url,
+                                             platform="Twitch",)
+            else:
+                activity = discord.Activity(name=title,
+                                            type=discord.ActivityType.watching)
             await bot.change_presence(status=discord.Status.online, activity=activity)
             try:
                 announcement_time_first = (session.start - datetime.timedelta(minutes=15))
