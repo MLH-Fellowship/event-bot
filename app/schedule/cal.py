@@ -54,11 +54,13 @@ def get_next_session():
                 next_session['description'], next_session['summary'], cal_session.url)
             cal_session.description = get_description(next_session['description'], cal_session.url)
         
-        except:
+        except Exception as e:
             print(f" - Missing required JSON fields in event '{next_session['summary']}' on '{next_session['start']['dateTime']}'")
+            print(f"Exception: {e}")
             
-    except:
+    except Exception as e:
         print("Cannot fetch events from calendar/malformed response")
+        print(f"Exception: {e}")
 
     return cal_session
 
@@ -78,8 +80,9 @@ def get_title(description, summary, url):
             return summary
         else:
             return title
-    except:
+    except Exception as e:
         print(" - Title not from Calendly. Falling back to event title")
+        print(f"Exception: {e}")
         return summary
 
 def get_description(description, url):
@@ -101,8 +104,9 @@ def get_description(description, url):
             return None
         else:
             return short_description
-    except:
+    except Exception as e:
         print(" - Description not from Calendly")
+        print(f"Exception: {e}")
         return None
 
 def check_url(url):

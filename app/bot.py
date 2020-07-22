@@ -72,8 +72,8 @@ async def check_schedule():
                     await send_long_announcement(session)
                 elif check_times(announcement_time_last):
                     await send_short_announcement(session)
-            except:
-                print("Session was invalid")
+            except Exception as e:
+                print(f"Session was invalid: {e}")
         await asyncio.sleep(60)
 
 async def send_long_announcement(session):
