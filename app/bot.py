@@ -99,9 +99,7 @@ async def send_long_announcement(session):
             embed = discord.Embed(title=session.title,
                                 description=session.description,
                                 colour=0x1D539F)    
-        
-    if session.speaker != None:
-        embed.set_author(name=session.speaker)
+
     embed.set_footer(text=session.url)
     embed.set_image(url=IMG_URL)
     await events_channel.send(f'Hey {fellow_role.mention}s, {ttp_fellow_role.mention}s, and {role_techtonica_role.mention} - We have a session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
