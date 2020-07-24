@@ -8,29 +8,16 @@ import dateutil.parser
 from schedule.session import Session
 from dotenv import load_dotenv
 import datetime
-import pickle
-import os.path
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
 
 def get_calendar():
     load_dotenv()
     SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+    SERVICE_ACCOUNT_FILE = '/app/credentials.json'
 
-    creds = None
-    if os.path.exists('/app/token.pickle'):
-        with open('/app/token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                '/app/credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open('/app/token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
+    creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
     service = build('calendar', 'v3', credentials=creds)
     now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
