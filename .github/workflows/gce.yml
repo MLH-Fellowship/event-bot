@@ -31,7 +31,7 @@ jobs:
     - name: Create Service Account JSON and .env
       run: ./.github/scripts/decode.sh
       env:
-        GA_SA: ${{ secrets.GA_SA }}
+        GC_SA: ${{ secrets.GC_SA }}
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         DISCORD_EVENTS_ID: ${{ secrets.DISCORD_EVENTS_ID }}
         DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
