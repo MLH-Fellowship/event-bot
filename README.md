@@ -8,7 +8,7 @@ Inspired by the [Hack Quarantine](https://hackquarantine.com) [Calendar Bot](htt
 
 ![Docker Image CI](https://github.com/MLH-Fellowship/session-bot/workflows/Docker%20Image%20CI/badge.svg)
 
-![Deploying to Google Compute Engine](https://github.com/MLH-Fellowship/session-bot/workflows/.github/workflows/gce.yml/badge.svg)
+![Deploying to Google Compute Engine](https://github.com/MLH-Fellowship/session-bot/workflows/Deploying%20to%20Google%20Compute%20Engine/badge.svg)
 
 ## Setup
 
