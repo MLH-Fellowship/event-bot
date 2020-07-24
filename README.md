@@ -6,6 +6,10 @@ Inspired by the [Hack Quarantine](https://hackquarantine.com) [Calendar Bot](htt
 
 ![Example](img/example.png)
 
+![Docker Image CI](https://github.com/MLH-Fellowship/session-bot/workflows/Docker%20Image%20CI/badge.svg)
+
+![Deploying to Google Compute Engine](https://github.com/MLH-Fellowship/session-bot/workflows/.github/workflows/gce.yml/badge.svg)
+
 ## Setup
 
 Make sure to set your Google Calendar to the same timezone as the Discord Bot. In this case, it's the timezone of the Compute Engine on Google Cloud.
