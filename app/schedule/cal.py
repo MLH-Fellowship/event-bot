@@ -1,6 +1,7 @@
 from __future__ import print_function
 import requests
 import os
+import sys
 import json
 import datetime
 import dateutil.parser
@@ -40,6 +41,7 @@ def get_calendar():
     return events
 
 def get_next_session():
+    sys.stdout.flush()
     now = datetime.datetime.now()
     cal_session = Session()
     sessions = get_calendar()

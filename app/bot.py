@@ -8,7 +8,6 @@ from discord.ext import commands
 from discord.http import LoginFailure
 from dotenv import load_dotenv
 from schedule import cal
-from util import logging
 
 def my_except_hook(exctype, value, traceback):
     if exctype == LoginFailure:
@@ -18,11 +17,11 @@ def my_except_hook(exctype, value, traceback):
         sys.__excepthook__(exctype, value, traceback)
 sys.excepthook = my_except_hook
 
-logging.init()
 bot = commands.Bot(command_prefix='?')
 
 def main():
     load_dotenv()
+    sys.stdout.flush()
     global events_channel_id, guild_id, role_id, role_ttp_id, role_techtonica_id, utc
     utc=pytz.UTC
     try:
@@ -45,11 +44,11 @@ def main():
 async def check_schedule():
     await bot.wait_until_ready()
 
-    global events_channel, fellow_role, ttp_fellow_role, events_channel_id, guild_id, role_id, role_ttp_id, role_techtonica_id
+    global events_channel, fellow_role, ttp_fellow_role, techtonica_role, events_channel_id, guild_id, role_id, role_ttp_id, role_techtonica_id
     events_channel = bot.get_channel(events_channel_id)
     fellow_role = bot.get_guild(guild_id).get_role(role_id) 
     ttp_fellow_role = bot.get_guild(guild_id).get_role(role_ttp_id)
-    role_techtonica_role = bot.get_guild(guild_id).get_role(role_techtonica_id)
+    techtonica_role = bot.get_guild(guild_id).get_role(role_techtonica_id)
 
     while True:
         session = cal.get_next_session()
@@ -77,7 +76,7 @@ async def check_schedule():
         await asyncio.sleep(60)
 
 async def send_long_announcement(session):
-    global events_channel, fellow_role, ttp_fellow_role, role_techtonica_role
+    global events_channel, fellow_role, ttp_fellow_role, techtonica_role
     IMG_URL = 'https://mlh.will-russell.com/img/discord-session.jpg'
     if session.description == None or len(session.description) > 255:
         if check_url(session.url):
@@ -102,11 +101,13 @@ async def send_long_announcement(session):
 
     embed.set_footer(text=session.url)
     embed.set_image(url=IMG_URL)
-    await events_channel.send(f'Hey {fellow_role.mention}s, {ttp_fellow_role.mention}s, and {role_techtonica_role.mention} - We have a session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
+    await events_channel.send(f'Hey {fellow_role.mention}s, {ttp_fellow_role.mention}s, and {techtonica_role.mention} - We have a session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
+    print("Long announcement made")
 
 async def send_short_announcement(session):
-    global events_channel, fellow_role, ttp_fellow_role, role_techtonica_id
-    await events_channel.send(f'Just 3 minutes until we have **{session.title}**! :tada:\n {session.url}\n{fellow_role.mention} {ttp_fellow_role.mention} {role_techtonica_role.mention}')
+    global events_channel, fellow_role, ttp_fellow_role, techtonica_role
+    await events_channel.send(f'Just 3 minutes until we have **{session.title}**! :tada:\n {session.url}\n{fellow_role.mention} {ttp_fellow_role.mention} {techtonica_role.mention}')
+    print("Short announcement made")
 
 def check_times(announcement_time):
     current_time = datetime.datetime.now()

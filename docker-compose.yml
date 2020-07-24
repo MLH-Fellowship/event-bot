@@ -5,5 +5,3 @@ services:
   session_bot:
     build: .
     env_file: .env
-
-
