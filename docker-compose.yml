@@ -5,3 +5,5 @@ services:
   session_bot:
     build: .
     env_file: .env
+    environment: 
+      PYTHONUNBUFFERED: 1
