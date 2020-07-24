@@ -30,9 +30,9 @@ jobs:
     # Configure Docker to use the gcloud command-line tool as a credential
     # helper for authentication
     - name: Create Service Account JSON
-        run: ./.github/scripts/decode.sh
-        env: 
-          GA_SA: ${{ secrets.GA_SA }}
+      run: ./.github/scripts/decode.sh
+      env: 
+        GA_SA: ${{ secrets.GA_SA }}
     - run: |-
         gcloud --quiet auth configure-docker
     # Build the Docker image
