@@ -9,7 +9,7 @@ env:
   PROJECT_ID: ${{ secrets.GCE_PROJECT }}
   GCE_INSTANCE: session-bot
   GCE_INSTANCE_ZONE: europe-west2-c
-  TOKEN: ${{ secrets.TOKEN }}	 
+  TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
   setup-build-publish-deploy:
@@ -31,14 +31,22 @@ jobs:
     # helper for authentication
     - name: Create Service Account JSON
       run: ./.github/scripts/decode.sh
-      env: 
+      env:
         GA_SA: ${{ secrets.GA_SA }}
+        TOKEN: ${{ secrets.TOKEN }}
+        DISCORD_EVENTS_ID: ${{ secrets.DISCORD_EVENTS_ID }}
+        DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+        DISCORD_ROLE_ID: ${{ secrets.DISCORD_ROLE_ID }}
+        DISCORD_ROLE_TTP_ID: ${{ secrets.DISCORD_ROLE_TTP_ID }}
+        DISCORD_ROLE_TECHTONICA_ID: ${{ secrets.DISCORD_ROLE_TECHTONICA_ID }}
+        GCAL_ID: ${{ secrets.GCAL_ID }}
+        GCAL_KEY: ${{ secrets.GCAL_KEY }}
     - run: |-
         gcloud --quiet auth configure-docker
     # Build the Docker image
     - name: Build
       run: |-
-        docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA" . --build-arg TOKEN=$TOKEN --build-arg DISCORD_EVENTS_ID=$DISCORD_EVENTS_ID --build-arg DISCORD_GUILD_ID=$DISCORD_GUILD_ID --build-arg DISCORD_ROLE_ID=$DISCORD_ROLE_ID --build-arg DISCORD_ROLE_TTP_ID=$DISCORD_ROLE_TTP_ID --build-arg DISCORD_ROLE_TECHTONICA_ID=$DISCORD_ROLE_TECHTONICA_ID --build-arg GCAL_ID=$GCAL_ID --build-arg GCAL_KEY=$GCAL_KEY
+        docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA" .
     # Push the Docker image to Google Container Registry
     - name: Publish
       run: |-
