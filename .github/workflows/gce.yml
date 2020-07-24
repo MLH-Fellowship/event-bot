@@ -9,7 +9,6 @@ env:
   PROJECT_ID: ${{ secrets.GCE_PROJECT }}
   GCE_INSTANCE: session-bot
   GCE_INSTANCE_ZONE: europe-west2-c
-  TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
   setup-build-publish-deploy:
@@ -29,11 +28,11 @@ jobs:
 
     # Configure Docker to use the gcloud command-line tool as a credential
     # helper for authentication
-    - name: Create Service Account JSON
+    - name: Create Service Account JSON and .env
       run: ./.github/scripts/decode.sh
       env:
         GA_SA: ${{ secrets.GA_SA }}
-        TOKEN: ${{ secrets.TOKEN }}
+        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         DISCORD_EVENTS_ID: ${{ secrets.DISCORD_EVENTS_ID }}
         DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
         DISCORD_ROLE_ID: ${{ secrets.DISCORD_ROLE_ID }}
