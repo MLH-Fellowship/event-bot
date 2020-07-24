@@ -31,12 +31,14 @@ jobs:
     # helper for authentication
     - name: Create Service Account JSON
         run: ./.github/scripts/decode.sh
+        env: 
+          GA_SA: ${{ secrets.GA_SA }}
     - run: |-
         gcloud --quiet auth configure-docker
     # Build the Docker image
     - name: Build
       run: |-
-        docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA" . --build-arg TOKEN=$TOKEN
+        docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA" . --build-arg TOKEN=$TOKEN DISCORD_EVENTS_ID=$DISCORD_EVENTS_ID DISCORD_GUILD_ID=$DISCORD_GUILD_ID DISCORD_ROLE_ID=$DISCORD_ROLE_ID DISCORD_ROLE_TTP_ID=$DISCORD_ROLE_TTP_ID DISCORD_ROLE_TECHTONICA_ID=$DISCORD_ROLE_TECHTONICA_ID GCAL_ID=$GCAL_ID GCAL_KEY=$GCAL_KEY
     # Push the Docker image to Google Container Registry
     - name: Publish
       run: |-

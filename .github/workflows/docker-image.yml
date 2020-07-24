@@ -15,6 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Create Service Account JSON
-      run: ./.github/scripts/decode.sh
+        run: ./.github/scripts/decode.sh
+        env: 
+          GA_SA: ${{ secrets.GA_SA }}
+
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag pin-bot:$(date +%s) --build-arg TOKEN=$TOKEN
+        run: docker build . --file Dockerfile --tag pin-bot:$(date +%s) --build-arg TOKEN=$TOKEN DISCORD_EVENTS_ID=$DISCORD_EVENTS_ID DISCORD_GUILD_ID=$DISCORD_GUILD_ID DISCORD_ROLE_ID=$DISCORD_ROLE_ID DISCORD_ROLE_TTP_ID=$DISCORD_ROLE_TTP_ID DISCORD_ROLE_TECHTONICA_ID=$DISCORD_ROLE_TECHTONICA_ID GCAL_ID=$GCAL_ID GCAL_KEY=$GCAL_KEY
