@@ -20,4 +20,4 @@ jobs:
         GA_SA: ${{ secrets.GA_SA }}
 
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag pin-bot:$(date +%s) --build-arg TOKEN=$TOKEN DISCORD_EVENTS_ID=$DISCORD_EVENTS_ID DISCORD_GUILD_ID=$DISCORD_GUILD_ID DISCORD_ROLE_ID=$DISCORD_ROLE_ID DISCORD_ROLE_TTP_ID=$DISCORD_ROLE_TTP_ID DISCORD_ROLE_TECHTONICA_ID=$DISCORD_ROLE_TECHTONICA_ID GCAL_ID=$GCAL_ID GCAL_KEY=$GCAL_KEY
+      run: docker build . --file Dockerfile --tag pin-bot:$(date +%s) --build-arg TOKEN=$TOKEN --build-arg DISCORD_EVENTS_ID=$DISCORD_EVENTS_ID --build-arg DISCORD_GUILD_ID=$DISCORD_GUILD_ID --build-arg DISCORD_ROLE_ID=$DISCORD_ROLE_ID --build-arg DISCORD_ROLE_TTP_ID=$DISCORD_ROLE_TTP_ID --build-arg DISCORD_ROLE_TECHTONICA_ID=$DISCORD_ROLE_TECHTONICA_ID --build-arg GCAL_ID=$GCAL_ID --build-arg GCAL_KEY=$GCAL_KEY
