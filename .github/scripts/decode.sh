@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo -n "$GC_SA" | base64 -d > credientials.json
+echo -n "$GC_SA" | base64 -d > credentials.json

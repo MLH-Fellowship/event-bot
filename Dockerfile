@@ -17,7 +17,6 @@ RUN apk upgrade --update --no-cache \
 
 WORKDIR /app
 COPY credentials.json /app/credentials.json
-COPY token.pickle /app/token.pickle
 COPY requirements.txt /requirements.txt
 RUN \
     apk add --no-cache --virtual=build-dependencies \
