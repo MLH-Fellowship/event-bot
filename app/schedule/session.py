@@ -6,6 +6,8 @@ class Session:
         self.description = None
         self.url = None
         self.speaker = None
+        self.img_url = None
+        self.calendar_url = None
 
     def __str__(self):
         return self.title

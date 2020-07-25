@@ -57,17 +57,7 @@ async def check_schedule():
     while True:
         session = cal.get_next_session()
         if session != None:
-            twitch_url = "https://twitch.tv"
-            title = f"{session.title} {get_time_diff(session.start)}"
-            if session.url[:len(twitch_url)] == twitch_url:
-                activity = discord.Streaming(name=title,
-                                             details=title,
-                                             url=session.url,
-                                             platform="Twitch",)
-            else:
-                activity = discord.Activity(name=title,
-                                            type=discord.ActivityType.watching)
-            await bot.change_presence(status=discord.Status.online, activity=activity)
+            await set_status(session)
             try:
                 announcement_time_first = (session.start - datetime.timedelta(minutes=15))
                 announcement_time_last = (session.start - datetime.timedelta(minutes=3))
@@ -79,33 +69,35 @@ async def check_schedule():
                 print(f"Session was invalid: {e}")
         await asyncio.sleep(60)
 
+async def set_status(session):
+    twitch_url = "https://twitch.tv"
+    title = f"{session.title} {get_time_diff(session.start)}"
+    if session.url[:len(twitch_url)] == twitch_url:
+        activity = discord.Streaming(name=title,
+                                     url=session.url,
+                                     platform="Twitch",)
+    else:
+        activity = discord.Activity(name=title,
+                                    type=discord.ActivityType.watching)
+    await bot.change_presence(status=discord.Status.online, activity=activity)
+
 async def send_long_announcement(session):
     global events_channel, fellow_role, ttp_fellow_role, techtonica_role
-    if session.description == None or len(session.description) > 255:
-        if check_url(session.url):
-            embed = discord.Embed(title=session.title,
-                                description=session.url,
-                                url=session.url,
-                                colour=COLOUR)
-        else:
-            embed = discord.Embed(title=session.title,
-                                description=session.url,
-                                colour=COLOUR)
-    else:
-        if check_url(session.url):
-            embed = discord.Embed(title=session.title,
-                                description=session.description,
-                                url=session.url,
-                                colour=COLOUR)
-        else:
-            embed = discord.Embed(title=session.title,
-                                description=session.description,
-                                colour=COLOUR)
+    
+    embed = discord.Embed(title=session.title,
+                        description=session.description,
+                        url=session.url,
+                        colour=COLOUR)
 
     embed.set_footer(text=session.url)
-    embed.set_image(url=IMG_URL)
+    
+    if session.img_url != None:
+        embed.set_image(url=session.img_url)
+    else:
+        embed.set_image(url=IMG_URL)
     if session.speaker != None:
         embed.set_author(name=session.speaker)
+    
     await events_channel.send(f'Hey {fellow_role.mention}s, {ttp_fellow_role.mention}s, and {techtonica_role.mention} - We have a session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
     await add_reactions(await events_channel.fetch_message(events_channel.last_message_id))
     print("Long announcement made")
@@ -147,12 +139,6 @@ def get_time_diff(announcement_time):
     else:
         return "in " + diff_args[0] + ":" + diff_args[1] + " hr"
 
-def check_url(url):
-    if url[:8] == "https://":
-        return True
-    else:
-        return False
-
 async def add_reactions(message):
     emojis = ["💻", "🙌", "🔥", "💯", "🍕", "🎉", "🥳", "💡", "📣"]
     random.shuffle(emojis)
@@ -165,19 +151,19 @@ async def next_session(ctx):
     print("Sending next session via command")
     
     if session != None:
-        if check_url(session.url):
-            embed = discord.Embed(title=session.title,
-                                description=f'Starting at {str(session.start.strftime("%H:%M GMT on %B %d"))}',
-                                url=session.url,
-                                colour=COLOUR)
-        else:
-            embed = discord.Embed(title=session.title,
-                                description=f'Starting at {str(session.start.strftime("%H:%M GMT on %B %d"))}',
-                                colour=COLOUR)
+        embed = discord.Embed(title=session.title,
+                            description=f'Starting at {str(session.start.strftime("%H:%M GMT on %B %d"))}',
+                            url=session.calendar_url,
+                            colour=COLOUR)
 
-        embed.set_image(url=IMG_URL)
+        if session.img_url != None:
+            embed.set_image(url=session.img_url)
+        else:
+            embed.set_image(url=IMG_URL)
+
         if session.speaker != None:
             embed.set_author(name=session.speaker)
+
         await ctx.send(f'Here\'s the next session at {str(session.start.strftime("%H:%M GMT on %B %d"))}!', embed=embed)
         await add_reactions(await ctx.channel.fetch_message(ctx.channel.last_message_id))
 
