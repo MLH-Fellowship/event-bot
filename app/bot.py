@@ -26,8 +26,7 @@ IMG_URL = 'https://mlh.will-russell.com/img/discord-session.jpg'
 def main():
     load_dotenv()
     sys.stdout.flush()
-    global events_channel_id, guild_id, role_id, role_ttp_id, role_techtonica_id, utc
-    utc=pytz.UTC
+    global events_channel_id, guild_id, role_id, role_ttp_id, role_techtonica_id
     try:
         token = os.getenv("DISCORD_TOKEN")
         events_channel_id = int(os.getenv("DISCORD_EVENTS_ID"))
@@ -131,8 +130,7 @@ def check_times(announcement_time):
         return False
 
 def get_time_diff(announcement_time):
-    global utc
-    diff = announcement_time.replace(tzinfo=utc) - datetime.datetime.now().replace(tzinfo=utc)
+    diff = announcement_time.replace(tzinfo=pytz.UTC) - datetime.datetime.now().replace(tzinfo=pytz.UTC)
     diff_args = str(diff).split(':')
     if (diff.total_seconds() < 0):
         return "happening NOW!"
