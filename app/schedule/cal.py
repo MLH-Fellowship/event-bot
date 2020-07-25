@@ -33,8 +33,7 @@ def get_next_session():
     cal_session = Session()
     sessions = get_calendar()
     try:
-        next_session = sessions[0]
-        
+        next_session = sessions[0]  
         try:
             cal_session.start = dateutil.parser.parse(
                 next_session['start']['dateTime'])
@@ -55,15 +54,10 @@ def get_next_session():
 
 def get_title(description, summary, url):
     question1 = 'What is the title of this session?: '
-
-    localhost_url = 'https://organize.mlh.io'
-    if check_url(url):
-        return summary
-
     try:
         start_index = description.find(question1)
         end_index = description.find(
-            '<br>', start_index + len(question1))
+            '\n', start_index + len(question1))
         title = description[start_index + len(question1):end_index]
         if len(title) > 256:
             return summary
@@ -77,16 +71,12 @@ def get_title(description, summary, url):
 def get_description(description, url):
     question1 = 'Please describe this session in 3-5 sentences. This will be shared with the fellows.'
     start_answer = ': '
-    localhost_url = 'https://organize.mlh.io'
-    if check_url(url):
-        end = description.find('<br>')
-        return description[:end]
     try:
         start_index = description.find(
             question1)
         end_question_index = description.find(start_answer, start_index + len(question1))
         end_index = description.find(
-            '<br>', start_index + len(question1))
+            '\n', start_index + len(question1))
         short_description = description[end_question_index +
                                         len(start_answer):end_index]
         if len(short_description) > 255:
@@ -97,10 +87,3 @@ def get_description(description, url):
         print(" - Description not from Calendly")
         print(f"Exception: {e}")
         return None
-
-def check_url(url):
-    localhost_url = 'https://organize.mlh.io'
-    if url[:len(localhost_url)] == localhost_url or url[:8] != 'https://':
-        return True
-    else:
-        return False
