@@ -104,6 +104,8 @@ async def send_long_announcement(session):
 
     embed.set_footer(text=session.url)
     embed.set_image(url=IMG_URL)
+    if session.speaker != None:
+        embed.set_author(name=session.speaker)
     await events_channel.send(f'Hey {fellow_role.mention}s, {ttp_fellow_role.mention}s, and {techtonica_role.mention} - We have a session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
     await add_reactions(await events_channel.fetch_message(events_channel.last_message_id))
     print("Long announcement made")
@@ -161,6 +163,7 @@ async def add_reactions(message):
 async def next_session(ctx):
     session = cal.get_next_session()
     print("Sending next session via command")
+    
     if session != None:
         if check_url(session.url):
             embed = discord.Embed(title=session.title,
@@ -173,6 +176,8 @@ async def next_session(ctx):
                                 colour=COLOUR)
 
         embed.set_image(url=IMG_URL)
+        if session.speaker != None:
+            embed.set_author(name=session.speaker)
         await ctx.send(f'Here\'s the next session at {str(session.start.strftime("%H:%M GMT on %B %d"))}!', embed=embed)
         await add_reactions(await ctx.channel.fetch_message(ctx.channel.last_message_id))
 

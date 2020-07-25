@@ -35,13 +35,12 @@ def get_next_session():
     try:
         next_session = sessions[0]  
         try:
-            cal_session.start = dateutil.parser.parse(
-                next_session['start']['dateTime'])
+            cal_session.start = dateutil.parser.parse(next_session['start']['dateTime'])
             cal_session.url = next_session['location']
-            cal_session.title = get_title(
-                next_session['description'], next_session['summary'], cal_session.url)
-            cal_session.description = get_description(next_session['description'], cal_session.url)
-        
+            description = next_session['description']
+            cal_session.title = get_title(description, next_session['summary'])
+            cal_session.description = get_description(description)
+            cal_session.speaker = get_speaker(description)
         except Exception as e:
             print(f" - Missing required JSON fields in event '{next_session['summary']}' on '{next_session['start']['dateTime']}'")
             print(f"Exception: {e}")
@@ -52,38 +51,36 @@ def get_next_session():
 
     return cal_session
 
-def get_title(description, summary, url):
-    question1 = 'What is the title of this session?: '
-    try:
-        start_index = description.find(question1)
-        end_index = description.find(
-            '\n', start_index + len(question1))
-        title = description[start_index + len(question1):end_index]
-        if len(title) > 256:
-            return summary
-        else:
-            return title
-    except Exception as e:
-        print(" - Title not from Calendly. Falling back to event title")
-        print(f"Exception: {e}")
+def get_title(description, summary):
+    question = 'What is the title of this session?: '
+    title = get_content(description, question)
+    print(title)
+    if len(title) > 256:
         return summary
+    else:
+        return title
 
-def get_description(description, url):
-    question1 = 'Please describe this session in 3-5 sentences. This will be shared with the fellows.'
-    start_answer = ': '
+def get_description(description):
+    question = 'Please describe this session in 3-5 sentences. This will be shared with the fellows: '
+    short_description = get_content(description, question)
+    if len(short_description) > 255:
+        return None
+    else:
+        return short_description
+
+def get_speaker(description):
+    question = "Speaker: "
+    return get_content(description, question)
+
+def get_content(text, question):
     try:
-        start_index = description.find(
-            question1)
-        end_question_index = description.find(start_answer, start_index + len(question1))
-        end_index = description.find(
-            '\n', start_index + len(question1))
-        short_description = description[end_question_index +
-                                        len(start_answer):end_index]
-        if len(short_description) > 255:
-            return None
-        else:
-            return short_description
+        print(f"Question: {question}")
+        start_index = text.find(question) + len(question)
+        end_index = text.find('\n', start_index)
+        print(f"Start index: {start_index}, End index: {end_index}")
+        print(f"Content: {text[start_index:end_index]}")
+        return text[start_index:end_index]
     except Exception as e:
-        print(" - Description not from Calendly")
+        print("Content not found in Calendar description")
         print(f"Exception: {e}")
         return None
