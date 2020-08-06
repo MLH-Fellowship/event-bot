@@ -147,7 +147,6 @@ async def add_reactions(message):
 async def next_session(ctx):
     session = cal.get_next_session()
     print("Sending next session via command")
-    
     if session != None:
         embed = discord.Embed(title=session.title,
                             description=f'Starting at {str(session.start.strftime("%H:%M GMT on %B %d"))}',
@@ -164,6 +163,10 @@ async def next_session(ctx):
 
         await ctx.send(f'Here\'s the next session at {str(session.start.strftime("%H:%M GMT on %B %d"))}!', embed=embed)
         await add_reactions(await ctx.channel.fetch_message(ctx.channel.last_message_id))
+    
+@bot.after_invoke
+async def after_invoke(ctx):
+    await ctx.message.delete()
 
 if __name__ == '__main__':
     main()
