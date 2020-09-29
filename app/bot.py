@@ -18,7 +18,7 @@ def my_except_hook(exctype, value, traceback):
         sys.__excepthook__(exctype, value, traceback)
 sys.excepthook = my_except_hook
 
-bot = commands.Bot(command_prefix='-event')
+bot = commands.Bot(command_prefix='-event ')
 COLOUR = 0x1D539F
 IMG_URL = 'https://mlh.will-russell.com/img/discord-session.jpg'
 
