@@ -18,7 +18,7 @@ def my_except_hook(exctype, value, traceback):
         sys.__excepthook__(exctype, value, traceback)
 sys.excepthook = my_except_hook
 
-bot = commands.Bot(command_prefix='?')
+bot = commands.Bot(command_prefix='-event')
 COLOUR = 0x1D539F
 IMG_URL = 'https://mlh.will-russell.com/img/discord-session.jpg'
 
@@ -54,7 +54,7 @@ async def check_schedule():
         if session != None:
             await set_status(session)
             try:
-                announcement_time_first = (session.start - datetime.timedelta(minutes=15))
+                announcement_time_first = (session.start - datetime.timedelta(minutes=10))
                 announcement_time_last = (session.start - datetime.timedelta(minutes=3))
                 if check_times(announcement_time_first):
                     await send_long_announcement(session)
@@ -93,7 +93,7 @@ async def send_long_announcement(session):
     if session.speaker != None:
         embed.set_author(name=session.speaker)
     
-    await events_channel.send(f'Hey {fellow_role.mention}s, - We have a session in 15 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
+    await events_channel.send(f'Hey {fellow_role.mention}s, - We have a session in 10 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
     await add_reactions(await events_channel.fetch_message(events_channel.last_message_id))
     print("Long announcement made")
 
