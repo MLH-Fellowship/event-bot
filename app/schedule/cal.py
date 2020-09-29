@@ -85,7 +85,7 @@ def get_title(content, summary):
     return title
 
 def get_description(content):
-    question = 'Please describe this session in 3-5 sentences. This will be shared with the fellows: '
+    question = 'Please give a brief description of this session. This will be shared with the fellows: '
     description = get_content(content, question)
     if description == None:
         return ""
