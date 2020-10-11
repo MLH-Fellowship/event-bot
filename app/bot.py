@@ -51,7 +51,7 @@ async def check_schedule():
 
     while True:
         session = cal.get_next_session()
-        if session != None:
+        if session != None and session.title != None:
             await set_status(session)
             try:
                 announcement_time_first = (session.start - datetime.timedelta(minutes=10))
