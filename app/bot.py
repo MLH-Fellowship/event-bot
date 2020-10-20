@@ -93,7 +93,7 @@ async def send_long_announcement(session):
     if session.speaker != None:
         embed.set_author(name=session.speaker)
     
-    await events_channel.send(f'Hey {fellow_role.mention}s, - We have a session in 10 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
+    await events_channel.send(f'Hey {fellow_role.mention}s, - We have a session in 10 minutes! :tada:\n ({str(session.start.strftime("%H:%M ET"))})', embed=embed)
     await add_reactions(await events_channel.fetch_message(events_channel.last_message_id))
     print("Long announcement made")
 
