@@ -148,7 +148,7 @@ async def next_session(ctx):
     print("Sending next session via command")
     if session != None:
         embed = discord.Embed(title=session.title,
-                            description=f'Starting at {str(session.start.strftime("%H:%M GMT on %B %d"))}',
+                            description=f'Starting at {str(session.start.strftime("%H:%M ET on %B %d"))}',
                             url=session.calendar_url,
                             colour=COLOUR)
 
@@ -160,7 +160,7 @@ async def next_session(ctx):
         if session.speaker != None:
             embed.set_author(name=session.speaker)
 
-        await ctx.send(f'Here\'s the next session at {str(session.start.strftime("%H:%M GMT on %B %d"))}!', embed=embed)
+        await ctx.send(f'Here\'s the next session at {str(session.start.strftime("%H:%M ET on %B %d"))}!', embed=embed)
         await add_reactions(await ctx.channel.fetch_message(ctx.channel.last_message_id))
     
 @bot.after_invoke
