@@ -7,8 +7,8 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCE_PROJECT }}
-  GCE_INSTANCE: session-bot
-  GCE_INSTANCE_ZONE: europe-west2-c
+  GCE_INSTANCE: ${{ secrets.GCE_INSTANCE }}
+  GCE_INSTANCE_ZONE: us-central1-a
 
 jobs:
   setup-build-publish-deploy:
