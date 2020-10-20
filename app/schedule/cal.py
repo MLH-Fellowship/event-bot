@@ -86,14 +86,14 @@ def get_content(text, question):
         return None
 
 def get_title(content, summary):
-    question = 'What is the title of this session?: '
+    question = 'Title: '
     title = get_content(content, question)
     if title == None:
-        return summary
+        title = summary
     return title
 
 def get_description(content):
-    question = 'Please give a brief description of this session. This will be shared with the fellows: '
+    question = 'Description: '
     description = get_content(content, question)
     if description == None:
         return ""
