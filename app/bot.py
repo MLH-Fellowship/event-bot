@@ -19,8 +19,8 @@ def my_except_hook(exctype, value, traceback):
 sys.excepthook = my_except_hook
 
 bot = commands.Bot(command_prefix='-event ')
-COLOUR = 0x1D539F
-IMG_URL = 'https://mlh.github.io/event-bot/img/social.jpg'
+COLOUR = 0xF8BA2B
+IMG_URL = 'https://mlh.github.io/announcement-bot/img/social.jpg'
 
 
 def main():
