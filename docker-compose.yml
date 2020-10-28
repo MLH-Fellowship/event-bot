@@ -7,3 +7,6 @@ services:
     env_file: .env
     environment: 
       PYTHONUNBUFFERED: 1
+    deploy:
+      restart_policy:
+        condition: on-failure
