@@ -7,8 +7,8 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCE_PROJECT }}
-  GCE_INSTANCE: session-bot
-  GCE_INSTANCE_ZONE: europe-west2-c
+  GCE_INSTANCE: ${{ secrets.GCE_INSTANCE }}
+  GCE_INSTANCE_ZONE: us-central1-a
 
 jobs:
   setup-build-publish-deploy:
@@ -28,27 +28,27 @@ jobs:
 
     # Configure Docker to use the gcloud command-line tool as a credential
     # helper for authentication
-    #- name: Create Service Account JSON and .env
-    #  run: ./.github/scripts/decode.sh
-    #  env:
-    #    GC_SA: ${{ secrets.GC_SA }}
-    #    DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-    #    DISCORD_EVENTS_ID: ${{ secrets.DISCORD_EVENTS_ID }}
-    #    DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
-    #    DISCORD_ROLE_ID: ${{ secrets.DISCORD_ROLE_ID }}
-    #    GCAL_ID: ${{ secrets.GCAL_ID }}
-    #- run: |-
-    #    gcloud --quiet auth configure-docker
+    - name: Create Service Account JSON and .env
+      run: ./.github/scripts/decode.sh
+      env:
+        GC_SA: ${{ secrets.GC_SA }}
+        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+        DISCORD_EVENTS_ID: ${{ secrets.DISCORD_EVENTS_ID }}
+        DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+        DISCORD_ROLE_ID: ${{ secrets.DISCORD_ROLE_ID }}
+        GCAL_ID: ${{ secrets.GCAL_ID }}
+    - run: |-
+        gcloud --quiet auth configure-docker
     # Build the Docker image
-    #- name: Build
-    #  run: |-
-    #    docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA" .
+    - name: Build
+      run: |-
+        docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA" .
     # Push the Docker image to Google Container Registry
-    #- name: Publish
-    #  run: |-
-    #    docker push "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA"
-    #- name: Deploy
-    #  run: |-
-    #    gcloud compute instances update-container "$GCE_INSTANCE" \
-    #      --zone "$GCE_INSTANCE_ZONE" \
-    #      --container-image "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA"
+    - name: Publish
+      run: |-
+        docker push "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA"
+    - name: Deploy
+      run: |-
+        gcloud compute instances update-container "$GCE_INSTANCE" \
+          --zone "$GCE_INSTANCE_ZONE" \
+          --container-image "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA"

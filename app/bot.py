@@ -19,8 +19,8 @@ def my_except_hook(exctype, value, traceback):
 sys.excepthook = my_except_hook
 
 bot = commands.Bot(command_prefix='-event ')
-COLOUR = 0x1D539F
-IMG_URL = 'https://mlh.will-russell.com/img/discord-session.jpg'
+COLOUR = 0xF8BA2B
+IMG_URL = 'https://mlh.github.io/announcement-bot/img/social.jpg'
 
 
 def main():
@@ -45,9 +45,9 @@ def main():
 async def check_schedule():
     await bot.wait_until_ready()
 
-    global events_channel, fellow_role, events_channel_id, guild_id, role_id
+    global events_channel, default_role, events_channel_id, guild_id, role_id
     events_channel = bot.get_channel(events_channel_id)
-    fellow_role = bot.get_guild(guild_id).get_role(role_id) 
+    default_role = bot.get_guild(guild_id).get_role(role_id) 
 
     while True:
         session = cal.get_next_session()
@@ -77,7 +77,7 @@ async def set_status(session):
     await bot.change_presence(status=discord.Status.online, activity=activity)
 
 async def send_long_announcement(session):
-    global events_channel, fellow_role
+    global events_channel, default_role
     
     embed = discord.Embed(title=session.title,
                         description=session.description,
@@ -93,13 +93,13 @@ async def send_long_announcement(session):
     if session.speaker != None:
         embed.set_author(name=session.speaker)
     
-    await events_channel.send(f'Hey {fellow_role.mention}s, - We have a session in 10 minutes! :tada:\n ({str(session.start.strftime("%H:%M GMT"))})', embed=embed)
+    await events_channel.send(f'Hey {default_role.mention}s, - We have a session in 10 minutes! :tada:\n ({str(session.start.strftime("%H:%M ET"))})', embed=embed)
     await add_reactions(await events_channel.fetch_message(events_channel.last_message_id))
     print("Long announcement made")
 
 async def send_short_announcement(session):
-    global events_channel, fellow_role
-    await events_channel.send(f'Just 3 minutes until we have **{session.title}**! :tada:\n {session.url}\n{fellow_role.mention}')
+    global events_channel, default_role
+    await events_channel.send(f'Just 3 minutes until we have **{session.title}**! :tada:\n {session.url}\n{default_role.mention}')
     await add_reactions(await events_channel.fetch_message(events_channel.last_message_id))
     print("Short announcement made")
 
@@ -140,7 +140,7 @@ async def add_reactions(message):
         for emoji in emojis[:4]:
             await message.add_reaction(emoji)
     except Exception as e:
-        print(f"Exception reacting: {e}")
+        print(f"Exception adding Reactions: {e}")
 
 @bot.command(description="Displays next event")
 async def next_session(ctx):
@@ -148,7 +148,7 @@ async def next_session(ctx):
     print("Sending next session via command")
     if session != None:
         embed = discord.Embed(title=session.title,
-                            description=f'Starting at {str(session.start.strftime("%H:%M GMT on %B %d"))}',
+                            description=f'Starting at {str(session.start.strftime("%H:%M ET on %B %d"))}',
                             url=session.calendar_url,
                             colour=COLOUR)
 

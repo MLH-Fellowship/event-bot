@@ -59,7 +59,7 @@ def get_next_session():
                 cal_session.img_url = get_img(description)
             except Exception as e:
                 print(f"Missing required JSON fields in event '{next_session['summary']}' on '{next_session['start']['dateTime']}'")
-                print(f"Exception: {e}")
+                print(f"Exception making event obj: {e}")
                 
         except Exception as e:
             print("Cannot fetch events from calendar/malformed response")
@@ -69,6 +69,7 @@ def get_next_session():
         print(f"Exception getting calendar: {e}")
     return cal_session
 
+# Finds section from entire Event Description 
 def get_content(text, question):
     if question not in text:
         return None
@@ -82,18 +83,18 @@ def get_content(text, question):
             return content
     except Exception as e:
         print("Content not found in Calendar description")
-        print(f"Exception: {e}")
+        print(f"Exception getting content: {e}")
         return None
 
 def get_title(content, summary):
-    question = 'What is the title of this session?: '
+    question = 'Title: '
     title = get_content(content, question)
     if title == None:
-        return summary
+        title = summary
     return title
 
 def get_description(content):
-    question = 'Please give a brief description of this session. This will be shared with the fellows: '
+    question = 'Description: '
     description = get_content(content, question)
     if description == None:
         return ""
