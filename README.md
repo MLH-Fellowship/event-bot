@@ -1,9 +1,5 @@
 # Announcement Bot
 
-![Docker Image CI](https://github.com/MLH/event-bot/workflows/Docker%20Image%20CI/badge.svg)
-
-![Deploying to Google Compute Engine](https://github.com/MLH/event-bot/workflows/Deploying%20to%20Google%20Compute%20Engine/badge.svg)
-
 Discord bot that announces upcoming sessions on upcoming MLH events!
 
 Inspired by the [Hack Quarantine](https://hackquarantine.com) [Calendar Bot](https://github.com/HackQuarantine/calendar-bot) used to automatically make announcements from their calendar.
